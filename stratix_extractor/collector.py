@@ -72,6 +72,55 @@ def _default_connect(params: dict):
     return ConnectHandler(**params)
 
 
+# Algorithms that IOS 15.x Stratix 5700/8000 firmware offers and that newer
+# SSH libraries have dropped. The bundled Paramiko must still support these.
+LEGACY_KEX = ("diffie-hellman-group14-sha1", "diffie-hellman-group-exchange-sha1", "diffie-hellman-group1-sha1")
+LEGACY_HOST_KEYS = ("ssh-rsa",)
+
+
+def ssh_capabilities() -> dict:
+    """Key-exchange and host-key algorithms the installed Paramiko will offer."""
+    try:
+        import paramiko
+    except ImportError:
+        return {}
+    transport = paramiko.Transport
+    return {
+        "version": getattr(paramiko, "__version__", "?"),
+        "kex": list(getattr(transport, "_preferred_kex", ())),
+        "host_keys": list(getattr(transport, "_preferred_keys", ())),
+        "ciphers": list(getattr(transport, "_preferred_ciphers", ())),
+        "macs": list(getattr(transport, "_preferred_macs", ())),
+    }
+
+
+def missing_legacy_support(capabilities: dict | None = None) -> list[str]:
+    caps = ssh_capabilities() if capabilities is None else capabilities
+    if not caps:
+        return []
+    missing = [k for k in LEGACY_KEX if k not in caps["kex"]]
+    missing += [k for k in LEGACY_HOST_KEYS if k not in caps["host_keys"]]
+    return missing
+
+
+def _negotiated(connection) -> str:
+    """Describe the SSH algorithms agreed with the switch, if Paramiko exposes them."""
+    try:
+        transport = connection.remote_conn.get_transport()
+    except Exception:
+        return ""
+    if transport is None:
+        return ""
+    parts = []
+    for label, value in (("server", getattr(transport, "remote_version", "")),
+                         ("host key", getattr(transport, "host_key_type", "")),
+                         ("cipher", getattr(transport, "local_cipher", "")),
+                         ("MAC", getattr(transport, "local_mac", ""))):
+        if value and isinstance(value, str):
+            parts.append(f"{label} {value}")
+    return ", ".join(parts)
+
+
 def _join(values) -> str:
     seen = []
     for value in values:
@@ -245,6 +294,11 @@ def _describe_error(exc: Exception, target: SwitchTarget, timeout: int, elapsed:
         return "Authentication failed - check the username and password."
     if "ReadTimeout" in name:
         return f"Switch stopped responding to a command ({text})."
+    if any(type(c).__name__ == "IncompatiblePeer" or "Incompatible ssh peer" in str(c)
+           for c in _exception_chain(exc)):
+        detail = next((str(c) for c in _exception_chain(exc) if "Incompatible ssh peer" in str(c)), text)
+        return (f"The switch and this program have no SSH algorithm in common ({detail.strip()}). "
+                "The switch probably only offers older algorithms; see the log for what this program supports.")
 
     root = _root_os_error(exc)
     if root is not None and not isinstance(root, (socket.timeout, TimeoutError)):
@@ -295,6 +349,11 @@ class Collector:
         self.raw_dir = Path(raw_dir) if raw_dir else None
         self.connect = connect or _default_connect
         self.probe = probe or probe_ports
+        if connect is None:
+            missing = missing_legacy_support()
+            if missing:
+                self.log("Warning: the bundled SSH library cannot use " + ", ".join(missing)
+                         + "; older Stratix firmware may refuse to connect.", "warn")
 
     def collect(self, target: SwitchTarget, credentials: Credentials) -> SwitchResult:
         result = SwitchResult(target=target, started=datetime.now())
@@ -318,6 +377,9 @@ class Collector:
             prompt = connection.find_prompt().strip()
             result.prompt_hostname = prompt.rstrip("#>").strip()
             self.log(f"Connected in {time.monotonic() - clock:.1f} s, prompt '{prompt}'.", "ok")
+            negotiated = _negotiated(connection)
+            if negotiated:
+                self.log(f"  SSH: {negotiated}", "detail")
 
             if prompt.endswith(">"):
                 if credentials.enable_secret:
@@ -364,7 +426,12 @@ class Collector:
             for cause in _exception_chain(exc):
                 text = " ".join(str(cause).split())
                 self.log(f"  Cause: {type(cause).__module__}.{type(cause).__name__}: {text}", "detail")
-            if connection is None and "Authentication" not in type(exc).__name__:
+            if "no SSH algorithm in common" in result.error:
+                caps = ssh_capabilities()
+                if caps:
+                    self.log(f"  This program (Paramiko {caps['version']}) offers key exchange: "
+                             f"{', '.join(caps['kex'])}; host keys: {', '.join(caps['host_keys'])}.", "detail")
+            elif connection is None and "Authentication" not in type(exc).__name__:
                 self._diagnose(target)
         finally:
             if connection is not None:

@@ -22,7 +22,7 @@ def self_test(result_file: str) -> int:
         import tkinter
 
         from . import __version__
-        from .collector import Collector, SwitchResult, build_result
+        from .collector import Collector, SwitchResult, build_result, missing_legacy_support, ssh_capabilities
         from .excel_writer import verify_workbook, write_workbook, RunInfo
         from .switchlist import SwitchTarget
         from datetime import datetime
@@ -42,6 +42,12 @@ def self_test(result_file: str) -> int:
             raise RuntimeError(f"workbook verification failed: {message}")
         Collector(lambda m, l: None)  # constructs without connecting
         lines.append(f"workbook ok: {message}")
+        caps = ssh_capabilities()
+        lines.append("ssh kex: " + ", ".join(caps.get("kex", [])))
+        lines.append("ssh host keys: " + ", ".join(caps.get("host_keys", [])))
+        missing = missing_legacy_support(caps)
+        if missing:
+            raise RuntimeError("SSH library lacks algorithms Stratix switches need: " + ", ".join(missing))
         lines.append("SELF-TEST PASSED")
         code = 0
     except Exception:  # report anything that breaks in the bundle

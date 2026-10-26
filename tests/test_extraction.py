@@ -187,3 +187,36 @@ def test_probe_ports_against_closed_local_port():
         port = s.getsockname()[1]  # bound but not listening -> refused once closed
     result = probe_ports("127.0.0.1", (port,), timeout=2)
     assert "refused" in result[port]
+
+
+def test_incompatible_peer_explained():
+    class IncompatiblePeer(Exception):
+        pass
+
+    def connect(params):
+        try:
+            raise IncompatiblePeer("Incompatible ssh peer (no acceptable kex algorithm)")
+        except IncompatiblePeer as err:
+            from .fakes import NetmikoTimeoutException
+            raise NetmikoTimeoutException(
+                "A paramiko SSHException occurred during connection creation: "
+                "Incompatible ssh peer (no acceptable kex algorithm)") from err
+
+    log = []
+    collector = Collector(lambda m, lvl: log.append(m), connect=connect,
+                          probe=lambda h, p: {})
+    result = collector.collect(SwitchTarget("SW", "10.0.0.1"), Credentials("a", "b"))
+    assert "no SSH algorithm in common" in result.error
+    assert "no acceptable kex algorithm" in result.error
+    assert not any("Checking TCP ports" in m for m in log)
+
+
+def test_bundled_paramiko_supports_stratix_legacy_algorithms():
+    """IOS 15.x Stratix switches need SHA-1 key exchange and ssh-rsa host keys.
+    Paramiko 5 removed them; this fails the build if they disappear again."""
+    import pytest
+
+    pytest.importorskip("paramiko")
+    from stratix_extractor.collector import missing_legacy_support
+
+    assert missing_legacy_support() == []

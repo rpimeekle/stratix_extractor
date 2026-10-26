@@ -1,2 +1,5 @@
 netmiko>=4.3,<5
+# Paramiko 5 removed the SHA-1 key exchanges and ssh-rsa host keys that
+# IOS 15.x Stratix switches use. Keep 4.x until the switches are upgraded.
+paramiko>=4.0,<5
 openpyxl>=3.1,<4
