@@ -194,18 +194,89 @@ def _safe_name(text: str) -> str:
     return re.sub(r"[^A-Za-z0-9._-]+", "_", text).strip("_") or "switch"
 
 
-def _describe_error(exc: Exception, target: SwitchTarget, timeout: int) -> str:
+# Socket errors seen when the TCP connection itself fails, by errno / WinError.
+_SOCKET_ERRORS = {
+    10061: "connection refused - the switch answered but nothing is listening on that port (is SSH enabled?)",
+    111: "connection refused - the switch answered but nothing is listening on that port (is SSH enabled?)",
+    10060: "no reply - the switch is unreachable or a firewall is silently dropping the traffic",
+    110: "no reply - the switch is unreachable or a firewall is silently dropping the traffic",
+    10065: "no route to the host - check the IP address, VPN and this PC's network connection",
+    113: "no route to the host - check the IP address, VPN and this PC's network connection",
+    10051: "network unreachable - this PC has no route to that subnet (VPN or network adapter?)",
+    101: "network unreachable - this PC has no route to that subnet (VPN or network adapter?)",
+    10013: "blocked on this PC - a firewall or endpoint-protection product refused the connection for this program",
+    13: "blocked on this PC - a firewall or endpoint-protection product refused the connection for this program",
+    10054: "connection reset by the switch or a firewall in between",
+    104: "connection reset by the switch or a firewall in between",
+    11001: "the hostname could not be resolved in DNS",
+}
+
+
+def _exception_chain(exc: BaseException) -> list[BaseException]:
+    """The exception followed by everything it wrapped (outermost first)."""
+    chain, seen = [], set()
+    current: BaseException | None = exc
+    while current is not None and id(current) not in seen and len(chain) < 6:
+        seen.add(id(current))
+        chain.append(current)
+        current = current.__cause__ or current.__context__
+    return chain
+
+
+def _root_os_error(exc: BaseException) -> OSError | None:
+    """Netmiko wraps socket errors in its own exceptions; dig the original out."""
+    seen = set()
+    current: BaseException | None = exc
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        if isinstance(current, OSError) and (getattr(current, "winerror", None) or current.errno
+                                             or isinstance(current, (socket.timeout, TimeoutError))):
+            return current
+        current = current.__cause__ or current.__context__
+    return None
+
+
+def _describe_error(exc: Exception, target: SwitchTarget, timeout: int, elapsed: float | None = None) -> str:
     name = type(exc).__name__
     text = str(exc).strip().splitlines()[0] if str(exc).strip() else ""
+    where = f"{target.ip}:{target.port}"
+    after = f" after {elapsed:.1f} s" if elapsed is not None else ""
     if "Authentication" in name:
         return "Authentication failed - check the username and password."
-    if "Timeout" in name or isinstance(exc, (socket.timeout, TimeoutError)):
-        return f"No SSH response from {target.ip}:{target.port} within {timeout} s."
-    if isinstance(exc, ConnectionRefusedError):
-        return f"Connection refused on {target.ip}:{target.port} - is SSH enabled?"
     if "ReadTimeout" in name:
         return f"Switch stopped responding to a command ({text})."
-    return f"{name}: {text}" if text else name
+
+    root = _root_os_error(exc)
+    if root is not None and not isinstance(root, (socket.timeout, TimeoutError)):
+        code = getattr(root, "winerror", None) or root.errno
+        meaning = _SOCKET_ERRORS.get(code, root.strerror or str(root))
+        return f"Could not connect to {where}{after}: {meaning} [error {code}]."
+    if "Name or service" in text or "DNS failure" in text:
+        return f"Could not resolve {target.ip} in DNS."
+    if "banner" in str(exc).lower():
+        return (f"Connected to {where} but no SSH greeting arrived{after} - "
+                "the port may not be SSH, or the switch is busy.")
+    if ("Timeout" in name or isinstance(exc, (socket.timeout, TimeoutError))) and (
+            elapsed is None or elapsed >= timeout * 0.8):
+        return f"No SSH response from {where} within {timeout} s."
+    detail = " ".join(str(exc).split())
+    return f"Could not connect to {where}{after}: {name}: {detail}" if detail else f"{name}{after}"
+
+
+def probe_ports(host: str, ports=(22, 23), timeout: float = 3.0) -> dict[int, str]:
+    """Plain TCP check of each port: 'open', or the reason it failed."""
+    results = {}
+    for port in ports:
+        try:
+            with socket.create_connection((host, port), timeout=timeout):
+                results[port] = "open"
+        except OSError as exc:
+            if isinstance(exc, (socket.timeout, TimeoutError)):
+                results[port] = f"no reply within {timeout:.0f} s"
+            else:
+                code = getattr(exc, "winerror", None) or exc.errno
+                results[port] = _SOCKET_ERRORS.get(code, exc.strerror or str(exc)).split(" - ")[0] + f" [error {code}]"
+    return results
 
 
 class Collector:
@@ -217,11 +288,13 @@ class Collector:
         timeout: int = 20,
         raw_dir: str | Path | None = None,
         connect: Callable[[dict], object] | None = None,
+        probe: Callable[[str, tuple], dict] | None = None,
     ):
         self.log = log
         self.timeout = timeout
         self.raw_dir = Path(raw_dir) if raw_dir else None
         self.connect = connect or _default_connect
+        self.probe = probe or probe_ports
 
     def collect(self, target: SwitchTarget, credentials: Credentials) -> SwitchResult:
         result = SwitchResult(target=target, started=datetime.now())
@@ -285,8 +358,14 @@ class Collector:
                 else:
                     self.log(f"    {elapsed:.1f} s, {lines} lines", "detail")
         except Exception as exc:
-            result.error = _describe_error(exc, target, self.timeout)
+            elapsed = time.monotonic() - clock
+            result.error = _describe_error(exc, target, self.timeout, elapsed)
             self.log(f"Failed: {result.error}", "error")
+            for cause in _exception_chain(exc):
+                text = " ".join(str(cause).split())
+                self.log(f"  Cause: {type(cause).__module__}.{type(cause).__name__}: {text}", "detail")
+            if connection is None and "Authentication" not in type(exc).__name__:
+                self._diagnose(target)
         finally:
             if connection is not None:
                 try:
@@ -315,6 +394,36 @@ class Collector:
                     "ok",
                 )
         return result
+
+    def _diagnose(self, target: SwitchTarget) -> None:
+        """After a failed connection, check which ports answer to narrow down why."""
+        ports = tuple(dict.fromkeys((target.port, 22, 23)))
+        self.log(f"  Checking TCP ports {', '.join(map(str, ports))} on {target.ip} ...", "detail")
+        try:
+            results = self.probe(target.ip, ports)
+        except Exception as exc:
+            self.log(f"  Port check failed: {exc}", "detail")
+            return
+        for port, outcome in results.items():
+            label = {22: "SSH", 23: "Telnet"}.get(port, "SSH")
+            self.log(f"  Port {port} ({label}): {outcome}", "warn" if outcome != "open" else "detail")
+        ssh_open = results.get(target.port) == "open"
+        telnet_open = results.get(23) == "open"
+        if ssh_open:
+            hint = ("This program can reach the SSH port, so the failure was in setting up the SSH "
+                    "session itself (see the 'Cause' lines above for the exact reason).")
+        elif telnet_open:
+            hint = ("Telnet answers but SSH does not, so SSH is probably not enabled on this switch "
+                    "(it needs 'ip ssh version 2', an RSA key and 'transport input ssh' on the VTY lines).")
+        elif all("blocked on this PC" in v for v in results.values()):
+            hint = ("Every port is blocked on this PC itself; a firewall or endpoint-protection product "
+                    "is stopping this program. Ask IT to allow StratixExtractor.exe.")
+        elif any("refused" in v for v in results.values()):
+            hint = "The switch is reachable but refusing SSH; check that SSH is enabled."
+        else:
+            hint = ("Nothing answers; check the IP address, that this PC can ping the switch, "
+                    "and any VPN or firewall between them.")
+        self.log("  " + hint, "warn")
 
     def _save_raw(self, result: SwitchResult) -> None:
         folder = self.raw_dir / _safe_name(f"{result.target.hostname}_{result.target.ip}")

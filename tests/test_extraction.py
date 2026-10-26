@@ -119,3 +119,71 @@ def test_check_writable():
         assert check_writable(Path(folder) / "new.xlsx") is None
         assert not (Path(folder) / "new.xlsx").exists()
         assert "does not exist" in check_writable(Path(folder) / "missing" / "x.xlsx")
+
+
+def _netmiko_style_failure(os_error):
+    """Raise the way Netmiko does: its own exception, raised inside 'except socket.error'."""
+    from .fakes import NetmikoTimeoutException
+
+    def connect(params):
+        try:
+            raise os_error
+        except OSError:
+            raise NetmikoTimeoutException(  # noqa: B904 - mimics Netmiko
+                "TCP connection to device failed.\nCommon causes of this problem are:\n"
+                "1. Incorrect hostname or IP address.\n2. Wrong TCP port.\n"
+                "3. Intermediate firewall blocking access.")
+    return connect
+
+
+def test_immediate_connection_failure_reports_real_cause_and_probes_ports():
+    log = []
+    probed = []
+
+    def probe(host, ports):
+        probed.append((host, ports))
+        return {22: "connection refused [error 10061]", 23: "open"}
+
+    collector = Collector(lambda m, lvl: log.append((lvl, m)),
+                          connect=_netmiko_style_failure(ConnectionRefusedError(10061, "refused")),
+                          probe=probe)
+    result = collector.collect(SwitchTarget("SW", "172.21.117.11"), Credentials("admin", "pw"))
+    assert not result.success
+    assert "connection refused" in result.error and "within" not in result.error
+    assert "[error 10061]" in result.error
+    assert probed == [("172.21.117.11", (22, 23))]
+    text = "\n".join(m for _, m in log)
+    assert "Port 23 (Telnet): open" in text
+    assert "SSH is probably not enabled" in text
+
+
+def test_blocked_on_this_pc_hint():
+    log = []
+    blocked = "blocked on this PC [error 10013]"
+    collector = Collector(lambda m, lvl: log.append(m),
+                          connect=_netmiko_style_failure(PermissionError(10013, "forbidden")),
+                          probe=lambda host, ports: {p: blocked for p in ports})
+    result = collector.collect(SwitchTarget("SW", "10.0.0.1"), Credentials("a", "b"))
+    assert "firewall or endpoint-protection" in result.error
+    assert any("Ask IT to allow" in m for m in log)
+
+
+def test_genuine_timeout_still_says_timeout():
+    from stratix_extractor.collector import _describe_error
+
+    from .fakes import NetmikoTimeoutException
+    target = SwitchTarget("SW", "10.0.0.1")
+    exc = NetmikoTimeoutException("Connection to device timed-out")
+    assert "within 20 s" in _describe_error(exc, target, 20, elapsed=20.3)
+    assert "within" not in _describe_error(exc, target, 20, elapsed=0.02)
+
+
+def test_probe_ports_against_closed_local_port():
+    import socket
+
+    from stratix_extractor.collector import probe_ports
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]  # bound but not listening -> refused once closed
+    result = probe_ports("127.0.0.1", (port,), timeout=2)
+    assert "refused" in result[port]
