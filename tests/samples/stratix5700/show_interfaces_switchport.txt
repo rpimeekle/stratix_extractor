@@ -1,0 +1,68 @@
+Name: Gi1/1
+Switchport: Enabled
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Trunking Encapsulation: dot1q
+Operational Trunking Encapsulation: dot1q
+Negotiation of Trunking: On
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 1 (default)
+Administrative Native VLAN tagging: enabled
+Voice VLAN: none
+Trunking VLANs Enabled: 1,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,
+     170,180,190
+Pruning VLANs Enabled: 2-1001
+
+Name: Gi1/2
+Switchport: Enabled
+Administrative Mode: dynamic auto
+Operational Mode: down
+Access Mode VLAN: 1 (default)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Trunking VLANs Enabled: ALL
+
+Name: Fa1/1
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 10 (CONTROL)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Trunking VLANs Enabled: ALL
+
+Name: Fa1/2
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 10 (CONTROL)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Trunking VLANs Enabled: ALL
+
+Name: Fa1/3
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: down
+Access Mode VLAN: 20 (DRIVES)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Trunking VLANs Enabled: ALL
+
+Name: Fa1/6
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 30 (CAMERAS)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Trunking VLANs Enabled: ALL
+
+Name: Fa1/8
+Switchport: Enabled
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 20 (DRIVES)
+Trunking Native Mode VLAN: 1 (default)
+Voice VLAN: none
+Trunking VLANs Enabled: ALL

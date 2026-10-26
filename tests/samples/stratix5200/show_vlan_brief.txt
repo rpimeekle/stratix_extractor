@@ -1,0 +1,7 @@
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    
+40   ROBOTS                           active    Gi1/3, Gi1/4, Gi1/5, Gi1/6, Gi1/7
+                                                Gi1/8
+1002 fddi-default                     act/unsup 

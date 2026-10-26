@@ -1,0 +1,9 @@
+NAME: "1", DESCR: "Stratix 5700 8 Ethernet 10/100/1000 ports, 2 Gigabit SFP uplinks, Full firmware"
+PID: 1783-BMS10CGL     , VID: V01  , SN: FDO2140Y0AB
+
+NAME: "GigabitEthernet1/1", DESCR: "1000BaseSX SFP"
+PID: 1783-SFP1GSX        , VID: A    , SN: FNS17411AB2
+
+NAME: "GigabitEthernet1/2", DESCR: "1000BaseLX SFP"
+PID: GLC-LH-SMD          , VID:      , SN: AGM1823ZZ9Q
+

@@ -1,0 +1,5 @@
+NAME: "Switch 1", DESCR: "Stratix 5200 8 GE copper, 2 GE SFP, managed"
+PID: 1783-CMS10DN      , VID: V01  , SN: FDO2512J0XY
+
+NAME: "Power Supply 1", DESCR: "Power Supply Module"
+PID: PWR-IE50W-AC      , VID: V01  , SN: PSZ24440001

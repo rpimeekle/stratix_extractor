@@ -1,0 +1,12 @@
+
+Port      Name               Status       Vlan       Duplex  Speed Type 
+Gi1/1     Uplink to CORE-SW0 connected    trunk        full   1000 1000BaseSX SFP
+Gi1/2     Ring port B        notconnect   1            auto   auto 1000BaseLX SFP
+Fa1/1     Line 3 Filler PLC  connected    10         a-full  a-100 10/100BaseTX
+Fa1/2     HMI-03 PanelView 5 connected    10         a-full  a-100 10/100BaseTX
+Fa1/3     Drive VFD-301 Conv err-disabled 20           auto   auto 10/100BaseTX
+Fa1/4                        disabled     1            auto   auto 10/100BaseTX
+Fa1/5     Spare              notconnect   10           auto   auto 10/100BaseTX
+Fa1/6     Camera CAM-12 vlan connected    30         a-full  a-100 10/100BaseTX
+Fa1/7                        notconnect   1            auto   auto 10/100BaseTX
+Fa1/8     IO rack 3 (1734-AE connected    20         a-half   a-10 10/100BaseTX

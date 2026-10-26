@@ -1,0 +1,38 @@
+Cisco IOS XE Software, Version 17.09.04a
+Cisco IOS Software [Cupertino], IE3x00 Switch Software (IE3x00-UNIVERSALK9-M), Version 17.9.4a, RELEASE SOFTWARE (fc3)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2023 by Cisco Systems, Inc.
+Compiled Fri 20-Oct-23 10:44 by mcpre
+
+
+Cisco IOS-XE software, Copyright (c) 2005-2023 by cisco Systems, Inc.
+All rights reserved.
+
+ROM: IE3x00 ROMMON Version 17.9.1r
+
+PKG-SW52 uptime is 5 days, 2 hours, 1 minute
+Uptime for this control processor is 5 days, 2 hours, 3 minutes
+System returned to ROM by Reload Command
+System image file is "sdflash:ie3x00-universalk9.17.09.04a.SPA.bin"
+Last reload reason: Reload Command
+
+cisco 1783-CMS10DN (ARM64) processor with 1189404K/6147K bytes of memory.
+Processor board ID FDO2512J0XY
+Router operating mode: Autonomous
+10 Ethernet interfaces
+1 Virtual Ethernet interface
+8 Gigabit Ethernet interfaces
+2048K bytes of non-volatile configuration memory.
+1802164K bytes of physical memory.
+
+Base Ethernet MAC Address          : 6c:13:d5:aa:bb:00
+Motherboard Assembly Number        : 73-19280-04
+Motherboard Serial Number          : FOC25110XYZ
+Model Revision Number              : B0
+Motherboard Revision Number        : B0
+Model Number                       : 1783-CMS10DN
+System Serial Number               : FDO2512J0XY
+Top Assembly Part Number           : 68-102256-01
+Top Assembly Revision Number       : B0
+
+Configuration register is 0x102

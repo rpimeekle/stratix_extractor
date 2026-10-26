@@ -1,0 +1,39 @@
+------------------------------------------------
+Local Intf: Fa1/1
+Chassis id: 5c88.1648.0a01
+Port id: 5c88.1648.0a01
+Port Description: Port 1
+System Name: L3_FILLER_PLC
+
+System Description: 
+1756-EN2T/D
+
+Time remaining: 101 seconds
+System Capabilities: O
+Enabled Capabilities: O
+Management Addresses:
+    IP: 10.20.3.50
+Auto Negotiation - supported, enabled
+Physical media capabilities:
+    100base-TX(FD)
+Media Attachment Unit type: 16
+Vlan ID: - not advertised
+
+------------------------------------------------
+Local Intf: Fa1/8
+Chassis id: 0000.bc12.7788
+Port id: 0000.bc12.7788
+System Name: - not advertised
+
+System Description: 
+1734-AENTR/B POINT I/O Adapter
+
+Time remaining: 95 seconds
+System Capabilities: O
+Enabled Capabilities: O
+Management Addresses:
+    IP: 10.20.3.61
+Auto Negotiation - supported, enabled
+
+Total entries displayed: 2
+

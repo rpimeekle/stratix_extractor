@@ -1,0 +1,47 @@
+GigabitEthernet1/1 is up, line protocol is up (connected) 
+  Hardware is Gigabit Ethernet, address is 6c13.d5aa.bb01 (bia 6c13.d5aa.bb01)
+  Description: Ring port A to PKG-SW51 Gi1/2 (DLR / REP segment 2)
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+  Full-duplex, 1000Mb/s, link type is auto, media type is 1000BaseSX SFP
+  Last input 00:00:00, output 00:00:00, output hang never
+     100 packets input, 20000 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+     200 packets output, 30000 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+GigabitEthernet1/2 is up, line protocol is up (connected) 
+  Hardware is Gigabit Ethernet, address is 6c13.d5aa.bb02 (bia 6c13.d5aa.bb02)
+  Description: Ring port B to PKG-SW53 Gi1/1 (DLR / REP segment 2)
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+  Full-duplex, 1000Mb/s, link type is auto, media type is 1000BaseSX SFP
+  Last input 00:00:00, output 00:00:00, output hang never
+     100 packets input, 20000 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+     200 packets output, 30000 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+GigabitEthernet1/3 is up, line protocol is up (connected) 
+  Hardware is Gigabit Ethernet, address is 6c13.d5aa.bb03 (bia 6c13.d5aa.bb03)
+  Description: Palletiser robot cell controller - FANUC R-30iB Plus, cabinet PAL-1
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+  Full-duplex, 1000Mb/s, link type is auto, media type is 10/100/1000BaseTX
+  Last input 00:00:00, output 00:00:00, output hang never
+     100 packets input, 20000 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+     200 packets output, 30000 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+GigabitEthernet1/4 is down, line protocol is down (notconnect) 
+  Hardware is Gigabit Ethernet, address is 6c13.d5aa.bb04 (bia 6c13.d5aa.bb04)
+  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+  Auto-duplex, Auto-speed, link type is auto, media type is 10/100/1000BaseTX
+  Last input never, output never, output hang never
+     0 packets input, 0 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored, 0 abort
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+AppGigabitEthernet1/1 is up, line protocol is up (connected) 
+  Hardware is App-hosting Gigabit Ethernet, address is 6c13.d5aa.bb0a (bia 6c13.d5aa.bb0a)
+  MTU 9100 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+  Full-duplex, 1000Mb/s, link type is force-up, media type is App-hosting port
+Vlan1 is up, line protocol is up 
+  Hardware is Ethernet SVI, address is 6c13.d5aa.bb40 (bia 6c13.d5aa.bb40)
+  Internet address is 10.20.4.52/24
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 

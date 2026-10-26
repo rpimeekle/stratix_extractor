@@ -1,0 +1,11 @@
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Gi1/2, Fa1/4, Fa1/7
+10   CONTROL                          active    Fa1/1, Fa1/2, Fa1/5
+20   DRIVES                           active    Fa1/3, Fa1/8
+30   CAMERAS                          active    Fa1/6
+1002 fddi-default                     act/unsup 
+1003 token-ring-default               act/unsup 
+1004 fddinet-default                  act/unsup 
+1005 trnet-default                    act/unsup 

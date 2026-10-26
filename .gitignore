@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+# Output and switch lists with real credentials stay out of the repo
+*.xlsx
+!examples/*.xlsx
+*_raw/
+switches*.csv
+!examples/switches_example.csv
+.ruff_cache/

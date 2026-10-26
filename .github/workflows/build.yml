@@ -1,0 +1,65 @@
+name: Test and build Windows executable
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Run tests (parsers, Excel output, GUI)
+        run: python -m pytest -v
+
+      - name: Build StratixExtractor.exe
+        run: pyinstaller --noconfirm StratixExtractor.spec
+
+      - name: Self-test the packaged executable
+        shell: pwsh
+        run: |
+          $result = Join-Path $env:RUNNER_TEMP "selftest.txt"
+          $p = Start-Process -FilePath "dist\StratixExtractor.exe" -ArgumentList "--self-test", "`"$result`"" -Wait -PassThru
+          Get-Content $result
+          if ($p.ExitCode -ne 0) { throw "Self-test failed with exit code $($p.ExitCode)" }
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package | Out-Null
+          Copy-Item dist\StratixExtractor.exe package\
+          Copy-Item examples\switches_example.csv package\
+          Copy-Item README.md package\
+          Compress-Archive -Path package\* -DestinationPath StratixExtractor-windows.zip -Force
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StratixExtractor-windows
+          path: |
+            dist/StratixExtractor.exe
+            StratixExtractor-windows.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/StratixExtractor.exe
+            StratixExtractor-windows.zip
+          generate_release_notes: true

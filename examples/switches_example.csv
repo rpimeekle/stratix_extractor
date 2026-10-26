@@ -1,0 +1,4 @@
+hostname,ip,username,password,enable_secret,port
+LINE3-SW01,10.20.3.11,,,,22
+LINE3-SW02,10.20.3.12,,,,22
+PKG-SW52,10.20.4.52,admin,ChangeMe,,22

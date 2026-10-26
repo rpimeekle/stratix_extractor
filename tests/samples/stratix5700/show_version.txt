@@ -1,0 +1,42 @@
+Cisco IOS Software, IE2000 Software (IE2000-UNIVERSALK9-M), Version 15.2(8)E1, RELEASE SOFTWARE (fc1)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2021 by Cisco Systems, Inc.
+Compiled Fri 05-Mar-21 06:37 by prod_rel_team
+
+ROM: Bootstrap program is IE2000 boot loader
+BOOTLDR: IE2000 Boot Loader (IE2000-HBOOT-M) Version 15.2(4r)EA1, RELEASE SOFTWARE (fc1)
+
+LINE3-SW01 uptime is 12 weeks, 3 days, 4 hours, 12 minutes
+System returned to ROM by power-on
+System restarted at 09:12:44 AEST Mon Aug 3 2026
+System image file is "flash:/ie2000-universalk9-mz.152-8.E1/ie2000-universalk9-mz.152-8.E1.bin"
+Last reload reason: power-on
+
+cisco 1783-BMS10CGL (APM86XXX) processor (revision A0) with 245760K/16384K bytes of memory.
+Processor board ID FDO2140Y0AB
+Last reset from power-on
+2 Virtual Ethernet interfaces
+10 Gigabit Ethernet interfaces
+The password-recovery mechanism is enabled.
+
+512K bytes of flash-simulated non-volatile configuration memory.
+Base ethernet MAC Address       : 00:1D:9C:12:34:56
+Motherboard assembly number     : 73-14327-05
+Power supply part number        : 341-0266-01
+Motherboard serial number       : FDO21400ABC
+Model revision number           : A0
+Motherboard revision number     : A0
+Model number                    : 1783-BMS10CGL
+System serial number            : FDO2140Y0AB
+Top Assembly Part Number        : 800-41356-01
+Top Assembly Revision Number    : A0
+Version ID                      : V01
+Hardware Board Revision Number  : 0x03
+
+
+Switch Ports Model              SW Version            SW Image
+------ ----- -----              ----------            ----------
+*    1 10    1783-BMS10CGL      15.2(8)E1             IE2000-UNIVERSALK9-M
+
+
+Configuration register is 0xF

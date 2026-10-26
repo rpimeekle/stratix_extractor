@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stratix-extractor"
+dynamic = ["version"]
+description = "Extract switch and port details from Rockwell Stratix 5200/5700/8000 switches over SSH into Excel"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["netmiko>=4.3,<5", "openpyxl>=3.1,<4"]
+
+[project.scripts]
+stratix-extractor = "stratix_extractor.__main__:main"
+
+[tool.setuptools]
+packages = ["stratix_extractor"]
+
+[tool.setuptools.dynamic]
+version = { attr = "stratix_extractor.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

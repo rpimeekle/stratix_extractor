@@ -1,0 +1,118 @@
+Vlan1 is up, line protocol is up 
+  Hardware is EtherSVI, address is 001d.9c12.3440 (bia 001d.9c12.3440)
+  Description: Management VLAN
+  Internet address is 10.20.3.11/24
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+GigabitEthernet1/1 is up, line protocol is up (connected) 
+  Hardware is Gigabit Ethernet, address is 001d.9c12.3441 (bia 001d.9c12.3441)
+  Description: Uplink to CORE-SW01 Gi1/0/24 - fibre pair 7/8 in panel FP-3
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ARPA, loopback not set
+  Keepalive not set
+  Full-duplex, 1000Mb/s, link type is auto, media type is 1000BaseSX SFP
+  input flow-control is off, output flow-control is unsupported 
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input 00:00:00, output 00:00:01, output hang never
+  Last clearing of "show interface" counters never
+  Input queue: 0/75/0/0 (size/max/drops/flushes); Total output drops: 0
+     5000417 packets input, 712345678 bytes, 0 no buffer
+     Received 1234 broadcasts (1000 multicasts)
+     0 runts, 0 giants, 0 throttles 
+     2 input errors, 1 CRC, 1 frame, 0 overrun, 0 ignored
+     0 watchdog, 1000 multicast, 0 pause input
+     0 input packets with dribble condition detected
+     6000123 packets output, 812345678 bytes, 0 underruns
+     0 output errors, 0 collisions, 1 interface resets
+     0 unknown protocol drops
+GigabitEthernet1/2 is down, line protocol is down (notconnect) 
+  Hardware is Gigabit Ethernet, address is 001d.9c12.3442 (bia 001d.9c12.3442)
+  Description: Ring port B
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec, 
+  Auto-duplex, Auto-speed, link type is auto, media type is 1000BaseLX SFP
+  Last input never, output never, output hang never
+  Last clearing of "show interface" counters never
+     0 packets input, 0 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 2 interface resets
+FastEthernet1/1 is up, line protocol is up (connected) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3443 (bia 001d.9c12.3443)
+  Description: Line 3 Filler PLC - ControlLogix 1756-EN2T slot 2 (DO NOT DISABLE)
+  MTU 1500 bytes, BW 100000 Kbit/sec, DLY 100 usec, 
+  Full-duplex, 100Mb/s, media type is 10/100BaseTX
+  Last input 00:00:00, output 00:00:00, output hang never
+  Last clearing of "show interface" counters 2w3d
+     9876543 packets input, 1234567890 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     9876000 packets output, 1234000000 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+FastEthernet1/2 is up, line protocol is up (connected) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3444 (bia 001d.9c12.3444)
+  Description: HMI-03 PanelView 5510 operator station, Line 3 infeed
+  MTU 1500 bytes, BW 100000 Kbit/sec, DLY 100 usec, 
+  Full-duplex, 100Mb/s, media type is 10/100BaseTX
+  Last input 00:00:02, output 00:00:00, output hang never
+     123456 packets input, 23456789 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     234567 packets output, 34567890 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+FastEthernet1/3 is down, line protocol is down (err-disabled) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3445 (bia 001d.9c12.3445)
+  Description: Drive VFD-301 Conveyor 3 main drive PowerFlex 755
+  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+  Auto-duplex, Auto-speed, media type is 10/100BaseTX
+  Last input 3d04h, output 3d04h, output hang never
+     5000 packets input, 600000 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     6000 packets output, 700000 bytes, 0 underruns
+     0 output errors, 0 collisions, 3 interface resets
+FastEthernet1/4 is administratively down, line protocol is down (disabled) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3446 (bia 001d.9c12.3446)
+  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+  Auto-duplex, Auto-speed, media type is 10/100BaseTX
+  Last input never, output never, output hang never
+     0 packets input, 0 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+FastEthernet1/5 is down, line protocol is down (notconnect) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3447 (bia 001d.9c12.3447)
+  Description: Spare
+  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+  Auto-duplex, Auto-speed, media type is 10/100BaseTX
+  Last input never, output never, output hang never
+     0 packets input, 0 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+FastEthernet1/6 is up, line protocol is up (connected) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3448 (bia 001d.9c12.3448)
+  Description: Camera CAM-12 vlan 30 - packaging hall north wall, PoE injector PI-4
+  MTU 1500 bytes, BW 100000 Kbit/sec, DLY 100 usec, 
+  Full-duplex, 100Mb/s, media type is 10/100BaseTX
+  Last input 00:00:00, output 00:00:00, output hang never
+     777 packets input, 88888 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     999 packets output, 111111 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+FastEthernet1/7 is down, line protocol is down (notconnect) 
+  Hardware is Fast Ethernet, address is 001d.9c12.3449 (bia 001d.9c12.3449)
+  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+  Auto-duplex, Auto-speed, media type is 10/100BaseTX
+  Last input never, output never, output hang never
+     0 packets input, 0 bytes, 0 no buffer
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     0 packets output, 0 bytes, 0 underruns
+     0 output errors, 0 collisions, 0 interface resets
+FastEthernet1/8 is up, line protocol is up (connected) 
+  Hardware is Fast Ethernet, address is 001d.9c12.344a (bia 001d.9c12.344a)
+  Description: IO rack 3 (1734-AENTR) remote POINT I/O, cabinet MCC-3
+  MTU 1500 bytes, BW 10000 Kbit/sec, DLY 1000 usec, 
+  Half-duplex, 10Mb/s, media type is 10/100BaseTX
+  Last input 00:00:00, output 00:00:00, output hang never
+     4444 packets input, 555555 bytes, 0 no buffer
+     12 input errors, 7 CRC, 5 frame, 0 overrun, 0 ignored
+     5555 packets output, 666666 bytes, 0 underruns
+     3 output errors, 15 collisions, 0 interface resets

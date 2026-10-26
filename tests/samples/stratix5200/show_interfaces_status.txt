@@ -1,0 +1,7 @@
+
+Port         Name               Status       Vlan       Duplex  Speed Type 
+Gi1/1        Ring port A to PKG connected    trunk      a-full a-1000 1000BaseSX SFP
+Gi1/2        Ring port B to PKG connected    trunk      a-full a-1000 1000BaseSX SFP
+Gi1/3        Palletiser robot c connected    40         a-full a-1000 10/100/1000BaseTX
+Gi1/4                           notconnect   40           auto   auto 10/100/1000BaseTX
+Ap1/1                           connected    1          a-full a-1000 App-hosting port
