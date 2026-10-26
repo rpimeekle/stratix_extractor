@@ -1,5 +1,6 @@
 """Drives the real Tk window with fake switches. Skipped where Tk has no display."""
 
+import os
 import tempfile
 import time
 from pathlib import Path
@@ -19,6 +20,8 @@ def app(monkeypatch):
     try:
         root = tk.Tk()
     except tk.TclError as exc:
+        if os.environ.get("REQUIRE_GUI_TEST"):
+            pytest.fail(f"GUI test required but Tk could not start: {exc}")
         pytest.skip(f"no display: {exc}")
     root.withdraw()
     # No dialogs or saved settings during tests.
