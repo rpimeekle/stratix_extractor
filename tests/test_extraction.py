@@ -185,7 +185,8 @@ def test_probe_ports_against_closed_local_port():
     with socket.socket() as s:
         s.bind(("127.0.0.1", 0))
         port = s.getsockname()[1]  # bound but not listening -> refused once closed
-    result = probe_ports("127.0.0.1", (port,), timeout=2)
+    # Windows retries a refused SYN for ~2 s before reporting it, so allow longer.
+    result = probe_ports("127.0.0.1", (port,), timeout=10)
     assert "refused" in result[port]
 
 
